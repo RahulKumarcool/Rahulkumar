@@ -17,10 +17,11 @@ namespace Rahulkumar
         public Form1()
         {
             InitializeComponent();
-            caretbycastorixsir.SetFocus(this.Handle);
+            //caretbycastorixsir.SetFocus(this.Handle);
 
-            cs = new caretbycastorixsir();
-            cs.InstallHook();
+            //cs = new caretbycastorixsir();
+            //cs.InstallHook();
+            this.customDataGridView1.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -30,10 +31,10 @@ namespace Rahulkumar
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-            foreach (IntPtr hWndEdit in caretbycastorixsir.EditWindows)
-            {
-                caretbycastorixsir.RemoveWindowSubclass(hWndEdit, cs.SubClassDelegate, 0);
-            }
+            //foreach (IntPtr hWndEdit in caretbycastorixsir.EditWindows)
+            //{
+            //    caretbycastorixsir.RemoveWindowSubclass(hWndEdit, cs.SubClassDelegate, 0);
+            //}
         }
     }
 }
