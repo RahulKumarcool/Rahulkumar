@@ -12,8 +12,10 @@ namespace Rahulkumar
 {
     public partial class CustomDataGridView : DataGridView
     {
+        private bool inGotoNextControl = false;
         public CustomDataGridView()
         {
+            this.AllowUserToAddRows = false;
             InitializeComponent();
            // this.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
         }
@@ -23,7 +25,159 @@ namespace Rahulkumar
             base.OnPaint(pe);
         }
 
-        DisableSelectWindow disableSelectWindow;
+        protected override bool ProcessKeyPreview(ref Message m)
+        {
+            KeyEventArgs args1 = new KeyEventArgs(((Keys)((int)m.WParam)) | Control.ModifierKeys);
+            switch (args1.KeyCode)
+            {
+                case Keys.Left:
+                case Keys.Right:
+                case Keys.Up:
+                case Keys.Down:
+
+                    return false;
+            }
+            return base.ProcessKeyPreview(ref m);
+        }
+      
+
+
+        #region 2. Event when DataGridview gets focus 
+        protected override void OnEnter(EventArgs e)
+        {            
+            // if no rows present on entering in control , add new row and set the first cell as the active cell 
+            if (RowCount == 0)
+            {
+                TryAddRow();
+                this.CurrentCell = this.Rows[0].Cells[0];
+            }
+            base.OnEnter(e);
+        }
+        #endregion
+
+        #region 3. Event raised when focus is entered in cell 
+        protected override void OnCellEnter(DataGridViewCellEventArgs e)
+        {
+            DataGridViewColumn column = Columns[e.ColumnIndex];
+            if (!column.ReadOnly && column is DataGridViewTextBoxColumn)
+            {
+                BeginEdit(false); // false means don't select 
+            }
+            base.OnCellEnter(e);
+        }
+        #endregion
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Enter || keyData == Keys.Right)
+            {
+                var current = CurrentCell;
+                if (current != null)
+                {
+                    if (IsCurrentCellDirty) // fires if the cell state is changed by typing 
+                    {
+                        CommitEdit(DataGridViewDataErrorContexts.Commit);
+                        EndEdit(DataGridViewDataErrorContexts.Commit);
+                    }
+                    if (IsCurrentCellInEditMode)
+                    {
+                        EndEdit(DataGridViewDataErrorContexts.Commit);
+                    }
+                    int row = current.RowIndex;
+                    int col = current.ColumnIndex;
+                    if (row == LastRowIndex)
+                    {
+                        if (col == FirstVisibleColumn.Index)
+                        {
+                            if (Rows[row].IsNewRow || string.IsNullOrEmpty(CurrentCell.Value?.ToString()) || CurrentCell.Value.ToString() == "End of list")
+                            {
+                                return GotoNextControl();
+                            }
+                        }
+                    }
+                    if (col == LastVisibleColumn.Index) // if reached last cell of current row 
+                    {
+                        if (TryAddRow())
+                        {
+                            CurrentCell = this[FirstVisibleColumn.Index, RowCount - 1];
+                            return true;
+                        }
+
+                    }
+                }
+                return ProcessTabKey(Keys.Tab);
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+
+
+        #region function to end edit mode of current cell and add new row 
+        protected bool TryAddRow()
+        {
+            try
+            {
+                EndEdit();
+                Rows.Add();
+                return true;
+            }
+            catch (Exception ex)
+            {                
+                return false;
+            }
+        }
+
+        #endregion
+
+
+        protected int LastRowIndex
+        {
+            get
+            {
+                return Rows.GetLastRow(DataGridViewElementStates.Visible);
+            }
+        }
+
+        #region Function to return first visible column in datagridview 
+        protected DataGridViewColumn FirstVisibleColumn
+        {
+            get
+            {
+                return Columns.GetFirstColumn(
+                    DataGridViewElementStates.Visible,
+                    DataGridViewElementStates.None);
+            }
+        }
+        #endregion
+
+        #region Function to return Last visible column in datagridview
+        protected DataGridViewColumn LastVisibleColumn
+        {
+            get
+            {
+                return Columns.GetLastColumn(
+                    DataGridViewElementStates.Visible,
+                    DataGridViewElementStates.None);
+            }
+        }
+        #endregion
+
+        #region Function to go to next control 
+        protected bool GotoNextControl()
+        {
+            inGotoNextControl = true;
+            bool result = Parent.SelectNextControl(this, true, true, true, true);
+            inGotoNextControl = false;
+            return result;
+        }
+        #endregion
+
+    
+
+
+
+
+    DisableSelectWindow disableSelectWindow;
 
         protected override void OnEditingControlShowing(DataGridViewEditingControlShowingEventArgs e)
         {
