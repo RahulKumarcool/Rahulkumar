@@ -49,7 +49,7 @@ namespace Rahulkumar
             this.customDataGridView1.Name = "customDataGridView1";
             this.customDataGridView1.RowHeadersWidth = 51;
             this.customDataGridView1.RowTemplate.Height = 24;
-            this.customDataGridView1.Size = new System.Drawing.Size(587, 223);
+            this.customDataGridView1.Size = new System.Drawing.Size(658, 223);
             this.customDataGridView1.TabIndex = 0;
             // 
             // Column1
@@ -84,7 +84,7 @@ namespace Rahulkumar
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(865, 450);
             this.Controls.Add(this.customDataGridView1);
             this.Name = "Form1";
             this.Text = "Form1";
