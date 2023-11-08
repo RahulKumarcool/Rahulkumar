@@ -28,14 +28,13 @@ namespace Rahulkumar
         protected override void OnEditingControlShowing(DataGridViewEditingControlShowingEventArgs e)
         {
             TextBox textBox = e.Control as TextBox; // var tbox = (TextBox)e.Control;
-           // except starting column ie.  0  , all columns must type from right to left 
-            if (this.CurrentCell.ColumnIndex > 0 && this.CurrentCell.RowIndex >= 0)
-            {                
-                textBox.RightToLeft = RightToLeft.Yes;
-                textBox.TextAlign = HorizontalAlignment.Right;
-            }
             if (textBox != null)
             {
+                if (this.CurrentCell.ColumnIndex > 0 && this.CurrentCell.RowIndex >= 0)
+                {
+                    textBox.RightToLeft = RightToLeft.Yes;
+                    textBox.TextAlign = HorizontalAlignment.Right;
+                }
                 disableSelectWindow = new DisableSelectWindow(textBox);
                 textBox.ContextMenuStrip = new ContextMenuStrip(); // disable contect menu 
             }
