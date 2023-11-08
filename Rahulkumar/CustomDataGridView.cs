@@ -45,9 +45,9 @@ namespace Rahulkumar
         {
             if (disableSelectWindow != null)
             {
-                disableSelectWindow.ReleaseHandle();
+                disableSelectWindow.Dispose();         
                 disableSelectWindow = null;
-            }            
+            }
             base.OnCellEndEdit(e);
         }
 

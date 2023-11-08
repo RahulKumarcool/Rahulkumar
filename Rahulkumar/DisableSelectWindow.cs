@@ -7,16 +7,53 @@ using System.Windows.Forms;
 
 namespace Rahulkumar
 {
-    class DisableSelectWindow : NativeWindow
+    class DisableSelectWindow : NativeWindow, IDisposable
     {
         private bool MouseIsDown = false;
+        private TextBox Owner;
+        private bool disposedValue;
 
         public DisableSelectWindow(TextBox owner)
         {
+            Owner = owner;
+            if (Owner.IsHandleCreated)
+            {
+                AssignHandle(Owner.Handle);
+            }
+            Owner.HandleCreated += Owner_HandleCreated;
+        }
+
+        private void Owner_HandleCreated(object sender, EventArgs e)
+        {
+            TextBox owner = (TextBox)sender;
             AssignHandle(owner.Handle);
+            MouseIsDown = false;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                disposedValue = true;
+                ReleaseHandle();
+                Owner.HandleCreated -= Owner_HandleCreated;
+                Owner = null;
+            }
+        }
+
+        ~DisableSelectWindow()
+        {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         const int
+            WM_NCDESTROY = 0x0082,
             WM_KEYDOWN = 0x0100,
             WM_CHAR = 0x0102,
             WM_IME_CHAR = 0x0286,
@@ -34,6 +71,11 @@ namespace Rahulkumar
         {
             switch (m.Msg)
             {
+                case WM_NCDESTROY:
+                    base.WndProc(ref m);
+                    ReleaseHandle();
+                    break;
+
                 case WM_KEYDOWN:
                     Keys keyCode = (Keys)(int)(m.WParam.ToInt64() & 0xffff);
                     if (Control.ModifierKeys.HasFlag(Keys.Shift))
