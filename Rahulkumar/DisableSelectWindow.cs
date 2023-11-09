@@ -86,6 +86,8 @@ namespace Rahulkumar
                             case Keys.Down:
                             case Keys.Right:
                             case Keys.Left:
+                            case Keys.Home:
+                            case Keys.End:
                                 return;
                         }
                     }

@@ -186,8 +186,9 @@ namespace Rahulkumar
             {
                 if (this.CurrentCell.ColumnIndex > 0 && this.CurrentCell.RowIndex >= 0)
                 {
-                    textBox.RightToLeft = RightToLeft.Yes;
-                    textBox.TextAlign = HorizontalAlignment.Right;
+                    // no need 
+                   // textBox.RightToLeft = RightToLeft.Yes;
+                  //  textBox.TextAlign = HorizontalAlignment.Right;
                 }
                 disableSelectWindow = new DisableSelectWindow(textBox);
                 textBox.ContextMenuStrip = new ContextMenuStrip(); // disable contect menu 

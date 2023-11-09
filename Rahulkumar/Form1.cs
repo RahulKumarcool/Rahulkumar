@@ -22,6 +22,8 @@ namespace Rahulkumar
             //cs = new caretbycastorixsir();
             //cs.InstallHook();
             this.customDataGridView1.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            this.customDataGridView1.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            this.customDataGridView1.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
         }
 
         private void Form1_Load(object sender, EventArgs e)
